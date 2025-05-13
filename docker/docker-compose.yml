@@ -3,6 +3,7 @@ version: '3.1'
 services:
     flowise:
         image: flowiseai/flowise
+        container_name: polar-flowise
         restart: always
         environment:
             - PORT=${PORT}
@@ -59,6 +60,4 @@ services:
             timeout: 5s
             retries: 5
             start_period: 30s
-        volumes:
-            - ~/.flowise:/root/.flowise
         entrypoint: /bin/sh -c "sleep 3; flowise start"
