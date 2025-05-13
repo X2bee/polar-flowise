@@ -1,25 +1,20 @@
-# Stage 1: Build stage
-FROM node:20-alpine AS build
-
-USER root
-
-# Skip downloading Chrome for Puppeteer (saves build time)
-ENV PUPPETEER_SKIP_DOWNLOAD=true
-
-# Install latest Flowise globally (specific version can be set: flowise@1.0.0)
-RUN npm install -g flowise
-
-# Stage 2: Runtime stage
 FROM node:20-alpine
 
-# Install runtime dependencies
+# 기본 패키지 설치
 RUN apk add --no-cache chromium git python3 py3-pip make g++ build-base cairo-dev pango-dev curl
 
-# Set the environment variable for Puppeteer to find Chromium
+# Puppeteer 환경 변수
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-# Copy Flowise from the build stage
-COPY --from=build /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY --from=build /usr/local/bin /usr/local/bin
+# Flowise 설치 (고정 버전)
+RUN npm install -g flowise@2.2.8
 
-ENTRYPOINT ["flowise", "start"]
+# 코드가 위치할 디렉토리 설정
+WORKDIR /app
+
+# entrypoint.sh 추가
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

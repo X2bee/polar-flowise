@@ -50,6 +50,7 @@ services:
             - REDIS_KEY=${REDIS_KEY}
             - REDIS_CA=${REDIS_CA}
             - ENABLE_BULLMQ_DASHBOARD=${ENABLE_BULLMQ_DASHBOARD}
+            - GIT_REPO_URL=${GIT_REPO_URL}
         ports:
             - '${PORT}:${PORT}'
         healthcheck:
