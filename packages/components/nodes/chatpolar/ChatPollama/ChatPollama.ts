@@ -1,7 +1,7 @@
 import { ChatOllamaInput } from '@langchain/ollama'
 import { BaseChatModelParams } from '@langchain/core/language_models/chat_models'
 import { BaseCache } from '@langchain/core/caches'
-import { IMultiModalOption, INode, INodeData, INodeParams } from '../../../src/Interface'
+import { IMultiModalOption, INode, INodeData, INodeOptionsValue, INodeParams } from '../../../src/Interface'
 import { getBaseClasses } from '../../../src/utils'
 import { ChatOllama } from './FlowiseChatOllama'
 
@@ -36,8 +36,8 @@ class ChatPollama_ChatModels implements INode {
             {
                 label: 'Model Name',
                 name: 'modelName',
-                type: 'string',
-                placeholder: 'llama2'
+                type: 'asyncOptions',
+                loadMethod: 'loadModelsFromAPI',
             },
             {
                 label: 'Temperature',
@@ -207,6 +207,32 @@ class ChatPollama_ChatModels implements INode {
             }
         ]
     }
+
+    loadMethods = {
+        async loadModelsFromAPI(): Promise<INodeOptionsValue[]> {
+            const response = await fetch('http://61.14.208.242:11434/api/tags');
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch models: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            return data.models.map((model: {
+                name: string;
+                details?: {
+                    parameter_size?: string;
+                };
+            }) => ({
+                label: model.name,
+                name: model.name,
+                description: model.details?.parameter_size
+                    ? `Parameter Size: ${model.details.parameter_size}`
+                    : undefined,
+            }));
+        }
+    }
+
 
     async init(nodeData: INodeData): Promise<any> {
         const temperature = nodeData.inputs?.temperature as string
