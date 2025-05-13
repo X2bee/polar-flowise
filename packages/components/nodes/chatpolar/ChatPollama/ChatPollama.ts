@@ -36,8 +36,8 @@ class ChatPollama_ChatModels implements INode {
             {
                 label: 'Model Name',
                 name: 'modelName',
-                type: 'string',
-                placeholder: 'llama2'
+                type: 'options',
+                loadMethod: 'getAvailableModels',
             },
             {
                 label: 'Temperature',
@@ -206,6 +206,25 @@ class ChatPollama_ChatModels implements INode {
                 additionalParams: true
             }
         ]
+    }
+
+    loadMethods = {
+        async getAvailableModels(): Promise<{ label: string; name: string }[]> {
+            const { Client } = await import('ollama')
+            const client = new Client({ host: 'http://61.14.208.242:11434' })
+
+            try {
+                const result = await client.list()
+                if (!Array.isArray(result.models)) return []
+                return result.models.map((model) => ({
+                    label: `${model.name} (${model.size ?? 'N/A'})`,
+                    name: model.name
+                }))
+            } catch (err) {
+                console.error('[ChatPollama] getAvailableModels error:', err)
+                return []
+            }
+        }
     }
 
     async init(nodeData: INodeData): Promise<any> {
