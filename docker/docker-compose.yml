@@ -2,7 +2,9 @@ version: '3.1'
 
 services:
     flowise:
-        image: flowiseai/flowise:2.2.8
+        build:
+            context: .
+            dockerfile: Dockerfile
         container_name: polar-flowise
         restart: always
         environment:
@@ -60,4 +62,6 @@ services:
             timeout: 5s
             retries: 5
             start_period: 30s
-        entrypoint: /bin/sh -c "sleep 3; flowise start"
+        volumes:
+            - ./entrypoint.sh:/root/entrypoint.sh
+        entrypoint: ["/bin/sh", "/root/entrypoint.sh"]
