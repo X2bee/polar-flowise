@@ -36,8 +36,8 @@ class ChatPollama_ChatModels implements INode {
             {
                 label: 'Model Name',
                 name: 'modelName',
-                type: 'options',
-                loadMethod: 'getAvailableModels',
+                type: 'string',
+                placeholder: 'llama2'
             },
             {
                 label: 'Temperature',
@@ -207,27 +207,6 @@ class ChatPollama_ChatModels implements INode {
             }
         ]
     }
-
-    loadMethods = {
-        async getAvailableModels(): Promise<{ label: string; name: string }[]> {
-            // CommonJS 스타일 import로 안정성 보장
-            const ollama = await import('ollama')
-            const client = new ollama.Client({ host: 'http://61.14.208.242:11434' })
-
-            try {
-                const result = await client.list()
-                if (!Array.isArray(result.models)) return []
-                return result.models.map((model: any) => ({
-                    label: `${model.name} (${model.size ?? 'N/A'})`,
-                    name: model.name
-                }))
-            } catch (err) {
-                console.error('[ChatPollama] getAvailableModels error:', err)
-                return []
-            }
-        }
-    }
-
 
     async init(nodeData: INodeData): Promise<any> {
         const temperature = nodeData.inputs?.temperature as string
