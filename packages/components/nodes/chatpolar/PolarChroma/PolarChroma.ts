@@ -105,7 +105,13 @@ class Polar_Chroma_VectorStores implements INode {
     loadMethods = {
         async loadCollections(): Promise<INodeOptionsValue[]> {
             try {
-                const response = await fetch('http://open-webui:8080/api/v1/knowledge');
+                const response = await fetch('http://open-webui:8080/api/v1/knowledge', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer polarops123secretkey`
+                    }
+                });
                 if (!response.ok) {
                     throw new Error(`HTTP error ${response.status}`);
                 }
