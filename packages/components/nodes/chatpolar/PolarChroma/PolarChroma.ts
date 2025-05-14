@@ -61,16 +61,6 @@ class Polar_Chroma_VectorStores implements INode {
                 loadMethod: 'loadCollections',
             },
             {
-                label: 'Output Type',
-                name: 'output',
-                type: 'options',
-                options: [
-                    { label: 'Retriever', name: 'retriever' },
-                    { label: 'Vector Store', name: 'vectorStore' }
-                ],
-                default: 'retriever'
-            },
-            {
                 label: 'Chroma Metadata Filter',
                 name: 'chromaMetadataFilter',
                 type: 'json',
