@@ -20,6 +20,13 @@ export default defineConfig(async ({ mode }) => {
     }
 
     dotenv.config()
+    const env = process.env
+    
+    // Define default environment variables
+    const envDefaults = {
+        VITE_ALLOWED_IFRAME_ORIGINS: env.VITE_ALLOWED_IFRAME_ORIGINS || ''
+    }
+
     return {
         plugins: [react()],
         resolve: {
@@ -46,6 +53,9 @@ export default defineConfig(async ({ mode }) => {
             proxy,
             port: process.env.VITE_PORT ?? 8080,
             host: process.env.VITE_HOST
+        },
+        define: {
+            'import.meta.env.VITE_ALLOWED_IFRAME_ORIGINS': JSON.stringify(envDefaults.VITE_ALLOWED_IFRAME_ORIGINS)
         }
     }
 })
