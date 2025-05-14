@@ -95,10 +95,11 @@ class Polar_Chroma_VectorStores implements INode {
     loadMethods = {
         async loadCollections(): Promise<INodeOptionsValue[]> {
             try {
-                const response = await fetch('http://open-webui:8080/api/v1/knowledge/', {
+                const response = await fetch('http://open-webui:8080/api/v1/knowledge/flowise/list', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-Internal-Key': 'flowise-internal-secret'
                     }
                 });
                 if (!response.ok) {
