@@ -99,7 +99,6 @@ class Polar_Chroma_VectorStores implements INode {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer polarops123secretkey`
                     }
                 });
                 if (!response.ok) {
