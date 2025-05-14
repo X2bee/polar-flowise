@@ -17,11 +17,16 @@ import { ReactFlowContext } from '@/store/context/ReactFlowContext'
 // Security check for iframe embedding
 const checkAncestors = () => {
     try {
+        // Skip check if not in an iframe
+        if (window.self === window.top) {
+            return // Not in an iframe
+        }
+        
         // Get parent URL
         const parentOrigin = window.parent.location.origin
         
-        // Check if parent origin is in allowed set
-        if (window.parent !== window && !config.allowedAncestorsSet.has(parentOrigin)) {
+        // Check if parent origin is allowed
+        if (!config.isOriginAllowed(parentOrigin)) {
             throw new Error(`Embedding not allowed from: ${parentOrigin}`)
         }
     } catch (error) {

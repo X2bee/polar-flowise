@@ -26,6 +26,14 @@ export default defineConfig(async ({ mode }) => {
     const envDefaults = {
         VITE_ALLOWED_IFRAME_ORIGINS: env.VITE_ALLOWED_IFRAME_ORIGINS || ''
     }
+    
+    // Parse allowed origins
+    const allowedOrigins = [
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'https://polarops.x2bee.com',
+        ...(env.VITE_ALLOWED_IFRAME_ORIGINS || '').split(',').filter(Boolean)
+    ]
 
     return {
         plugins: [react()],
@@ -52,7 +60,23 @@ export default defineConfig(async ({ mode }) => {
             open: true,
             proxy,
             port: process.env.VITE_PORT ?? 8080,
-            host: process.env.VITE_HOST
+            host: process.env.VITE_HOST,
+            cors: true,
+            headers: {
+                'Access-Control-Allow-Origin': allowedOrigins.join(', '),
+                'Access-Control-Allow-Methods': 'GET',
+                'X-Frame-Options': 'ALLOW-FROM ' + allowedOrigins.join(' ')
+            },
+            middlewares: [
+                (req, res, next) => {
+                    // Add frame-ancestors to Content-Security-Policy header
+                    res.setHeader(
+                        'Content-Security-Policy',
+                        `frame-ancestors 'self' ${allowedOrigins.join(' ')};`
+                    )
+                    next()
+                }
+            ]
         },
         define: {
             'import.meta.env.VITE_ALLOWED_IFRAME_ORIGINS': JSON.stringify(envDefaults.VITE_ALLOWED_IFRAME_ORIGINS)
