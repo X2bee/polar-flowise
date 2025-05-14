@@ -233,7 +233,6 @@ class ChatPollama_ChatModels implements INode {
         }
     }
 
-
     async init(nodeData: INodeData): Promise<any> {
         const temperature = nodeData.inputs?.temperature as string
         const baseUrl = 'http://61.14.208.242:11434'
