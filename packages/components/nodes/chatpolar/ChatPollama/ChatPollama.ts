@@ -210,7 +210,7 @@ class ChatPollama_ChatModels implements INode {
 
     loadMethods = {
         async loadModelsFromAPI(): Promise<INodeOptionsValue[]> {
-            const response = await fetch('http://61.14.208.242:11434/api/tags');
+            const response = await fetch('http://ollama:11434/api/tags');
 
             if (!response.ok) {
                 throw new Error(`Failed to fetch models: ${response.statusText}`);
